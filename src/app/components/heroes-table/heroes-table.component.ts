@@ -5,6 +5,8 @@ import { MatInputModule } from '@angular/material/input';
 import { Hero } from '../../models/interfaces';
 import { HeroesService } from '../../services/heroes.service';
 import { HeroChipFilterComponent } from '../hero-chip-filter/hero-chip-filter.component';
+import { HeroDialogComponent } from '../hero-dialog/hero-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-heroes-table',
@@ -29,6 +31,7 @@ export class HeroesTableComponent implements OnInit {
   dataSource = new MatTableDataSource<Hero>();
   selectedHeroes: string[] = [];
   private heroesService = inject(HeroesService);
+  private dialog = inject(MatDialog);
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
@@ -39,7 +42,7 @@ export class HeroesTableComponent implements OnInit {
     });
   }
 
-
+  // Chips filter
   applyFilter(): void {
     this.dataSource.filterPredicate = (data: Hero, filter: string) => {
       if (!filter) return true;
@@ -52,5 +55,15 @@ export class HeroesTableComponent implements OnInit {
       name.toLowerCase().replace(/\s+/g, '')
     );
     this.dataSource.filter = normalizedFilters.join(',');
+  }
+
+  // Open modal with hero info
+  viewHero(hero: Hero): void {
+    const processedHero = this.heroesService.normalizeSkills(hero);
+    
+    this.dialog.open(HeroDialogComponent, {
+      data: { ...processedHero, isEdit: false },
+      disableClose: false
+    });
   }
 }

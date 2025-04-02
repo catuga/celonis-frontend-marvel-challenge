@@ -1,9 +1,11 @@
+import { Citizenship, Creator, Gender, MemberOf, Occupation, Skill } from "./enums";
+
 export interface Hero {
   nameLabel: string;
-  genderLabel: string;
-  citizenshipLabel: string;
-  skillsLabel: string;
-  occupationLabel: string;
-  memberOfLabel: string;
-  creatorLabel: string;
+  genderLabel: Gender;
+  citizenshipLabel: Citizenship;
+  skillsLabel: Skill[];
+  occupationLabel: Occupation;
+  memberOfLabel: MemberOf;
+  creatorLabel: Creator;
 }
