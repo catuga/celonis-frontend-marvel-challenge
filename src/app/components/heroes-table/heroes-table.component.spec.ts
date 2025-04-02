@@ -1,6 +1,9 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { HeroesTableComponent } from './heroes-table.component';
+import { HeroesService } from '../../services/heroes.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('HeroesTableComponent', () => {
   let component: HeroesTableComponent;
@@ -8,7 +11,12 @@ describe('HeroesTableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [HeroesTableComponent]
+      imports: [HeroesTableComponent],
+      providers: [
+        HeroesService,
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+      ]
     })
     .compileComponents();
 

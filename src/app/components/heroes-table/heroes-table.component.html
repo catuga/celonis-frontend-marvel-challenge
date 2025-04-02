@@ -7,7 +7,9 @@
   </app-hero-chip-filter>
 
   <!-- Create hero -->
-  <button mat-raised-button color="primary" (click)="createHero()">Create Hero</button>
+  <button mat-raised-button color="primary" (click)="createHero()">
+    Create Hero
+  </button>
 </header>
 
 <!-- Table -->
@@ -68,6 +70,22 @@
     </td>
   </ng-container>
 
+  <!-- actions -->
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef>Actions</th>
+    <td mat-cell *matCellDef="let element">
+      <button mat-icon-button color="primary" (click)="viewHero(element)">
+        <mat-icon>visibility</mat-icon>
+      </button>
+      <button mat-icon-button color="accent" (click)="editHero(element)">
+        <mat-icon>edit</mat-icon>
+      </button>
+      <button mat-icon-button color="warn" (click)="deleteHero(element)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns" (click)="viewHero(row)" style="cursor: pointer;"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
 </table>
