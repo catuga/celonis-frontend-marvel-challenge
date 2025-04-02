@@ -1,0 +1,18 @@
+<mat-form-field>
+  <mat-chip-grid #chipGrid>
+    @for (heroName of selectedHeroes; track heroName + '_' + $index) {
+      <mat-chip-row 
+        (removed)="removeChip(heroName)">
+        {{ heroName }}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip-row>
+    }
+    <input 
+      matInput 
+      placeholder="Filter heroes" 
+      [matChipInputFor]="chipGrid" 
+      (matChipInputTokenEnd)="addChip($event)">
+  </mat-chip-grid>
+</mat-form-field>
