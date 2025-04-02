@@ -36,4 +36,9 @@ export class HeroesService {
   getHeroes(): Hero[] {
     return this.heroes;
   }
+
+  // Adds hero
+  addHero(hero: Hero): void {
+    this.heroes.unshift(this.normalizeSkills(hero));
+  }
 }

@@ -1,6 +1,7 @@
 import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatSort, MatSortModule } from '@angular/material/sort';
+import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { Hero } from '../../models/interfaces';
 import { HeroesService } from '../../services/heroes.service';
@@ -14,7 +15,8 @@ import { MatDialog } from '@angular/material/dialog';
     MatTableModule,
     MatInputModule,
     MatSortModule,
-    HeroChipFilterComponent
+    HeroChipFilterComponent,
+    MatButtonModule,
   ],
   templateUrl: './heroes-table.component.html',
 })
@@ -26,7 +28,7 @@ export class HeroesTableComponent implements OnInit {
     'skillsLabel',
     'occupationLabel',
     'memberOfLabel',
-    'creatorLabel'
+    'creatorLabel',
   ];
   dataSource = new MatTableDataSource<Hero>();
   selectedHeroes: string[] = [];
@@ -46,12 +48,12 @@ export class HeroesTableComponent implements OnInit {
   applyFilter(): void {
     this.dataSource.filterPredicate = (data: Hero, filter: string) => {
       if (!filter) return true;
-      const filters = filter.split(',').map(f => f.trim().toLowerCase());
-      return filters.some(f =>
+      const filters = filter.split(',').map((f) => f.trim().toLowerCase());
+      return filters.some((f) =>
         data.nameLabel.toLowerCase().replace(/\s+/g, '').includes(f)
       );
     };
-    const normalizedFilters = this.selectedHeroes.map(name =>
+    const normalizedFilters = this.selectedHeroes.map((name) =>
       name.toLowerCase().replace(/\s+/g, '')
     );
     this.dataSource.filter = normalizedFilters.join(',');
@@ -60,10 +62,34 @@ export class HeroesTableComponent implements OnInit {
   // Open modal with hero info
   viewHero(hero: Hero): void {
     const processedHero = this.heroesService.normalizeSkills(hero);
-    
+
     this.dialog.open(HeroDialogComponent, {
       data: { ...processedHero, isEdit: false },
-      disableClose: false
+      disableClose: false,
+    });
+  }
+
+  // Open modal to create hero
+  createHero(): void {
+    const dialogRef = this.dialog.open(HeroDialogComponent, {
+      data: {
+        nameLabel: '',
+        genderLabel: null,
+        citizenshipLabel: '',
+        skillsLabel: [],
+        occupationLabel: '',
+        memberOfLabel: '',
+        creatorLabel: null,
+        isEdit: true,
+      },
+      disableClose: false,
+    });
+
+    dialogRef.afterClosed().subscribe((result) => {
+      if (result) {
+        this.heroesService.addHero(result);
+        this.dataSource.data = this.heroesService.getHeroes();
+      }
     });
   }
 }

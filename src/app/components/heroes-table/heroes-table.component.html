@@ -1,11 +1,14 @@
-<section>
+<header>
   <!-- Chip filter -->
   <app-hero-chip-filter
     [(selectedHeroes)]="selectedHeroes"
     (selectedHeroesChange)="applyFilter()"
   >
   </app-hero-chip-filter>
-</section>
+
+  <!-- Create hero -->
+  <button mat-raised-button color="primary" (click)="createHero()">Create Hero</button>
+</header>
 
 <!-- Table -->
 <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8">
