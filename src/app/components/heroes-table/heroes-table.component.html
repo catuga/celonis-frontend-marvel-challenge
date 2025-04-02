@@ -24,7 +24,10 @@
 
   <!-- genderLabel -->
   <ng-container matColumnDef="genderLabel">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Gender</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Gender
+      <app-chart [data]="getFrequencies('genderLabel')"></app-chart>
+    </th>
     <td mat-cell *matCellDef="let element">
       {{ element.genderLabel }}
     </td>
@@ -32,7 +35,10 @@
 
   <!-- citizenshipLabel -->
   <ng-container matColumnDef="citizenshipLabel">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Citizenship</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Citizenship
+      <app-chart [data]="getFrequencies('citizenshipLabel')"></app-chart>
+    </th>
     <td mat-cell *matCellDef="let element">
       {{ element.citizenshipLabel }}
     </td>
@@ -40,7 +46,10 @@
 
   <!-- skillsLabel -->
   <ng-container matColumnDef="skillsLabel">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Skills</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Skills
+      <app-chart [data]="getFrequencies('skillsLabel')"></app-chart>
+    </th>
     <td mat-cell *matCellDef="let element">
       {{ element.skillsLabel }}
     </td>
@@ -48,7 +57,10 @@
 
   <!-- occupationLabel -->
   <ng-container matColumnDef="occupationLabel">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Occupation</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Occupation
+      <app-chart [data]="getFrequencies('occupationLabel')"></app-chart>
+    </th>
     <td mat-cell *matCellDef="let element">
       {{ element.occupationLabel }}
     </td>
@@ -56,7 +68,10 @@
 
   <!-- memberOfLabel -->
   <ng-container matColumnDef="memberOfLabel">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Member of</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Member of
+      <app-chart [data]="getFrequencies('memberOfLabel')"></app-chart>
+    </th>
     <td mat-cell *matCellDef="let element">
       {{ element.memberOfLabel }}
     </td>
@@ -64,7 +79,10 @@
 
   <!-- creatorLabel -->
   <ng-container matColumnDef="creatorLabel">
-    <th mat-header-cell *matHeaderCellDef mat-sort-header>Creator</th>
+    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+      Creator
+      <app-chart [data]="getFrequencies('creatorLabel')"></app-chart>
+    </th>
     <td mat-cell *matCellDef="let element">
       {{ element.creatorLabel }}
     </td>

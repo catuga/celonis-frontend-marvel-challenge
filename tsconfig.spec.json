@@ -3,13 +3,19 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-  "outDir": "./out-tsc/spec",
-  "types": [ "jest" ],
-  "esModuleInterop": true,
-  "emitDecoratorMetadata": true
+    "outDir": "./out-tsc/spec",
+    "types": [
+      "jest",
+      "node"
+    ],
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true,
+    "strictNullChecks": false
   },
   "include": [
     "src/**/*.spec.ts",
-    "src/**/*.d.ts"
+    "src/**/*.d.ts",
+    "src/**/*.mock.ts"
   ]
 }

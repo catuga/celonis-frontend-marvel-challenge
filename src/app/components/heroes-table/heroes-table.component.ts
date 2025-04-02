@@ -9,6 +9,7 @@ import { HeroChipFilterComponent } from '../hero-chip-filter/hero-chip-filter.co
 import { HeroDialogComponent } from '../hero-dialog/hero-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
+import { ChartComponent } from '../chart/chart.component';
 
 @Component({
   selector: 'app-heroes-table',
@@ -19,6 +20,7 @@ import { MatIconModule } from '@angular/material/icon';
     HeroChipFilterComponent,
     MatButtonModule,
     MatIconModule,
+    ChartComponent
   ],
   templateUrl: './heroes-table.component.html',
 })
@@ -119,4 +121,23 @@ export class HeroesTableComponent implements OnInit {
       this.dataSource.data = this.heroesService.getHeroes();
     }
   }
+
+  // Process data for chart
+  getFrequencies(columnKey: keyof Hero): { label: string; count: number }[] {
+    const freqMap = new Map<string, number>();
+  
+    this.dataSource.data.forEach((hero) => {
+      const value = hero[columnKey];
+  
+      if (Array.isArray(value)) {
+        value.forEach((item) => {
+          freqMap.set(item, (freqMap.get(item) || 0) + 1);
+        });
+      } else if (typeof value === 'string') {
+        freqMap.set(value, (freqMap.get(value) || 0) + 1);
+      }
+    });
+  
+    return Array.from(freqMap.entries()).map(([label, count]) => ({ label, count }));
+  } 
 }

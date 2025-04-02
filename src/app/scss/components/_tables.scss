@@ -1,0 +1,14 @@
+table {
+  .mat-sort-header-content {
+    display: flex;
+    flex-direction: column;
+  }
+  .mat-sort-header {
+    padding-top: 16px;
+    padding-bottom: 5px;
+  }
+  .mat-column-actions {
+    width: 160px;
+    text-align: center;
+  }
+} 
