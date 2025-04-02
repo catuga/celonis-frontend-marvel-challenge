@@ -31,6 +31,7 @@ describe('HeroesService', () => {
   ];
 
   beforeEach(() => {
+    localStorage.removeItem('marvelHeroes');
     TestBed.configureTestingModule({
       providers: [
         HeroesService,
@@ -38,7 +39,7 @@ describe('HeroesService', () => {
         provideHttpClientTesting()
       ]
     });
-
+  
     service = TestBed.inject(HeroesService);
     httpMock = TestBed.inject(HttpTestingController);
   });
