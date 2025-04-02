@@ -1,5 +1,5 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { Hero } from '../models/interfaces';
 import { HttpClient } from '@angular/common/http';
 import { Skill } from '../models/enums';
@@ -10,6 +10,7 @@ import { Skill } from '../models/enums';
 export class HeroesService {
   private heroes: Hero[] = [];
   private http = inject(HttpClient);
+  private localStorageKey = 'marvelHeroes';
 
   // Normalize a string
   private normalizeString(value: string): string {
@@ -33,11 +34,18 @@ export class HeroesService {
 
   // Loads heroes
   loadHeroes(): Observable<Hero[]> {
-    return this.http.get<Hero[]>('assets/json/wikipedia_marvel_data.json').pipe(
-      tap((data) => {
-        this.heroes = data.map(this.normalizeSkills);
-      })
-    );
+    const stored = localStorage.getItem(this.localStorageKey);
+    if (stored) {
+      this.heroes = JSON.parse(stored).map(this.normalizeSkills);
+      return of(this.heroes);
+    } else {
+      return this.http.get<Hero[]>('assets/json/wikipedia_marvel_data.json').pipe(
+        tap(data => {
+          this.heroes = data.map(this.normalizeSkills);
+          localStorage.setItem(this.localStorageKey, JSON.stringify(this.heroes));
+        })
+      );
+    }
   }
 
   // Get heroes
@@ -48,6 +56,7 @@ export class HeroesService {
   // Adds hero
   addHero(hero: Hero): void {
     this.heroes.unshift(this.normalizeSkills(hero));
+    this.saveHeroes();
   }
 
   // Updates a hero
@@ -59,6 +68,7 @@ export class HeroesService {
 
     if (index !== -1) {
       this.heroes[index] = this.normalizeSkills(updatedHero);
+      this.saveHeroes();
     }
   }
 
@@ -67,5 +77,11 @@ export class HeroesService {
     this.heroes = this.heroes.filter(
       (h) => this.normalizeString(h.nameLabel) !== this.normalizeString(hero.nameLabel)
     );
+    this.saveHeroes();
+  }
+
+  // Saves heroes in localstore
+  private saveHeroes(): void {
+    localStorage.setItem(this.localStorageKey, JSON.stringify(this.heroes));
   }
 }
