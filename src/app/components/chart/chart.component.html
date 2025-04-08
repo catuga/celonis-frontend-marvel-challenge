@@ -1,7 +1,7 @@
 <div class="chart-container">
   <canvas baseChart
-    [data]="chartData"
+    [data]="(chartData$ | async) ?? { labels: [], datasets: [] }"
     [type]="chartType"
-    [options]="chartOptions">
+    [options]="(chartOptions$ | async) ?? chartOptions">
   </canvas>
 </div>

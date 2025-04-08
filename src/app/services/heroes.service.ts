@@ -39,12 +39,17 @@ export class HeroesService {
       this.heroes = JSON.parse(stored).map(this.normalizeSkills);
       return of(this.heroes);
     } else {
-      return this.http.get<Hero[]>('assets/json/wikipedia_marvel_data.json').pipe(
-        tap(data => {
-          this.heroes = data.map(this.normalizeSkills);
-          localStorage.setItem(this.localStorageKey, JSON.stringify(this.heroes));
-        })
-      );
+      return this.http
+        .get<Hero[]>('assets/json/wikipedia_marvel_data.json')
+        .pipe(
+          tap((data) => {
+            this.heroes = data.map(this.normalizeSkills);
+            localStorage.setItem(
+              this.localStorageKey,
+              JSON.stringify(this.heroes)
+            );
+          })
+        );
     }
   }
 
@@ -55,19 +60,21 @@ export class HeroesService {
 
   // Adds hero
   addHero(hero: Hero): void {
-    this.heroes.unshift(this.normalizeSkills(hero));
+    const normalized = this.normalizeSkills(hero);
+    this.heroes = [normalized, ...this.heroes];
     this.saveHeroes();
   }
 
   // Updates a hero
   updateHero(updatedHero: Hero, originalName?: string): void {
     const searchName = originalName || updatedHero.nameLabel;
-    const index = this.heroes.findIndex(
-      (h) => this.normalizeString(h.nameLabel) === this.normalizeString(searchName)
+    const heroToUpdate = this.heroes.find(
+      (h) =>
+        this.normalizeString(h.nameLabel) === this.normalizeString(searchName)
     );
 
-    if (index !== -1) {
-      this.heroes[index] = this.normalizeSkills(updatedHero);
+    if (heroToUpdate) {
+      Object.assign(heroToUpdate, this.normalizeSkills(updatedHero));
       this.saveHeroes();
     }
   }
@@ -75,7 +82,9 @@ export class HeroesService {
   // Deletes a hero
   deleteHero(hero: Hero): void {
     this.heroes = this.heroes.filter(
-      (h) => this.normalizeString(h.nameLabel) !== this.normalizeString(hero.nameLabel)
+      (h) =>
+        this.normalizeString(h.nameLabel) !==
+        this.normalizeString(hero.nameLabel)
     );
     this.saveHeroes();
   }

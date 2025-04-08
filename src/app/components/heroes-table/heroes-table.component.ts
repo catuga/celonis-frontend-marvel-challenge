@@ -10,6 +10,7 @@ import { HeroDialogComponent } from '../hero-dialog/hero-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { MatIconModule } from '@angular/material/icon';
 import { ChartComponent } from '../chart/chart.component';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-heroes-table',
@@ -20,7 +21,7 @@ import { ChartComponent } from '../chart/chart.component';
     HeroChipFilterComponent,
     MatButtonModule,
     MatIconModule,
-    ChartComponent
+    ChartComponent,
   ],
   templateUrl: './heroes-table.component.html',
 })
@@ -33,12 +34,13 @@ export class HeroesTableComponent implements OnInit {
     'occupationLabel',
     'memberOfLabel',
     'creatorLabel',
-    'actions'
+    'actions',
   ];
   dataSource = new MatTableDataSource<Hero>();
   selectedHeroes: string[] = [];
   private heroesService = inject(HeroesService);
   private dialog = inject(MatDialog);
+  private destroy$ = new Subject<void>();
 
   @ViewChild(MatSort, { static: true }) sort!: MatSort;
 
@@ -47,6 +49,11 @@ export class HeroesTableComponent implements OnInit {
       this.dataSource.data = heroes;
       this.dataSource.sort = this.sort;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   // Chips filter
@@ -90,12 +97,15 @@ export class HeroesTableComponent implements OnInit {
       disableClose: false,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.heroesService.addHero(result);
-        this.dataSource.data = this.heroesService.getHeroes();
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        if (result) {
+          this.heroesService.addHero(result);
+          this.dataSource.data = this.heroesService.getHeroes();
+        }
+      });
   }
 
   // Open modal to edit hero
@@ -106,12 +116,15 @@ export class HeroesTableComponent implements OnInit {
       disableClose: false,
     });
 
-    dialogRef.afterClosed().subscribe((result) => {
-      if (result) {
-        this.heroesService.updateHero(result, hero.nameLabel);
-        this.dataSource.data = this.heroesService.getHeroes();
-      }
-    });
+    dialogRef
+      .afterClosed()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((result) => {
+        if (result) {
+          this.heroesService.updateHero(result, hero.nameLabel);
+          this.dataSource.data = this.heroesService.getHeroes();
+        }
+      });
   }
 
   // Deletes a hero
@@ -125,10 +138,10 @@ export class HeroesTableComponent implements OnInit {
   // Process data for chart
   getFrequencies(columnKey: keyof Hero): { label: string; count: number }[] {
     const freqMap = new Map<string, number>();
-  
+
     this.dataSource.data.forEach((hero) => {
       const value = hero[columnKey];
-  
+
       if (Array.isArray(value)) {
         value.forEach((item) => {
           freqMap.set(item, (freqMap.get(item) || 0) + 1);
@@ -137,7 +150,10 @@ export class HeroesTableComponent implements OnInit {
         freqMap.set(value, (freqMap.get(value) || 0) + 1);
       }
     });
-  
-    return Array.from(freqMap.entries()).map(([label, count]) => ({ label, count }));
-  } 
+
+    return Array.from(freqMap.entries()).map(([label, count]) => ({
+      label,
+      count,
+    }));
+  }
 }
